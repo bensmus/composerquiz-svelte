@@ -1,5 +1,8 @@
 <script>
-    console.log("Hello Console :(")
+    let count = 0
 </script>
 
 <h1>Hello World!</h1>
+<button on:click={() => count++}>
+    {count}
+</button>
