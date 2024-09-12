@@ -8,20 +8,13 @@
     let currentSelection = null; // What button is selected.
     let selectionMade = false; // Has the select button been clicked?
     
-    /**
-     * @type {boolean}
-     */
-    export let resetFlag;
     export let selections;
     export let correct;
 
-    $: if (resetFlag === true) {
+    export function reset() {
         currentSelection = null;
         selectionMade = false;
-        resetFlag = false;
     }
-
-
 </script>
 
 <style>

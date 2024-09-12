@@ -1,36 +1,27 @@
 <script>
     import Selector from './Selector.svelte';
     import { sample } from './util.js'
+    
     const allSelections = ['Apple', 'Orange', 'Kiwi', 'Lemon', 'Potato', 'Avocado', 'Walnut'];
-
-    /**
-     * @type {string[]}
-     */
-    let selections;
-    /**
-     * @type {number}
-     */
-    let correct;
-    /**
-     * @type {boolean}
-     */
-    let resetFlag;
-    /**
-     * @type {boolean}
-     */
-    let nextDisabled;
-    function reset() {
-       selections = sample(allSelections, 4);
-       correct = 2;
-       resetFlag = true;
-       nextDisabled = true;
+    function newSelectionsAndCorrect() {
+        return [sample(allSelections, 4), Math.floor(Math.random() * 4)];
     }
-    reset();
+    let [selections, correct] = newSelectionsAndCorrect();
+    let nextDisabled = true;
+    /**
+     * @type {Selector}
+    */
+    let selector;
+    function reset() {
+       [selections, correct] = newSelectionsAndCorrect();
+       nextDisabled = true;
+       selector.reset();
+    }
 </script>
 
 <Selector 
     on:selection={event => {nextDisabled = false; console.log(event.detail.selectionWasCorrect)}} 
-    bind:resetFlag={resetFlag} 
+    bind:this={selector}
     selections={selections} 
     correct={correct}
 />
