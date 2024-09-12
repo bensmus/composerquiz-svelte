@@ -1,30 +1,27 @@
 <script>
-    // Values set by parent component through reset function.
-    let selections = ['', '', '', ''];
-    let correct = -1;
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
 
-    // Values are the state of the component.
     /**
      * @type {number | null}
      */
     let currentSelection = null; // What button is selected.
     let selectionMade = false; // Has the select button been clicked?
-
+    
     /**
-     * Resets the state and passes in newSelections, newCorrect from parent.
-     * Returns the selected value.
-     * 
-     * @param {string[]} newSelections
-     * @param {number} newCorrect
+     * @type {boolean}
      */
-    export function reset(newSelections, newCorrect) {
-        correct = newCorrect
-        selections = newSelections;
-        const oldSelection = currentSelection;
+    export let resetFlag;
+    export let selections;
+    export let correct;
+
+    $: if (resetFlag === true) {
         currentSelection = null;
         selectionMade = false;
-        return oldSelection;
+        resetFlag = false;
     }
+
+
 </script>
 
 <style>
@@ -58,4 +55,12 @@
 </div>
 
 <!-- Select button -->
-<button on:click={() => selectionMade = true}>select</button>
+<button 
+    disabled={currentSelection === null || selectionMade} 
+    on:click={() => {
+        selectionMade = true;
+        const selectionWasCorrect = currentSelection === correct;
+        dispatch('selection', {selectionWasCorrect: selectionWasCorrect})
+    }}>
+    Select
+</button>

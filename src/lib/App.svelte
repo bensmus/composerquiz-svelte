@@ -1,19 +1,37 @@
 <script>
     import Selector from './Selector.svelte';
     import { sample } from './util.js'
-    import { onMount } from 'svelte';
     const allSelections = ['Apple', 'Orange', 'Kiwi', 'Lemon', 'Potato', 'Avocado', 'Walnut'];
+
     /**
-     * @type {Selector}
+     * @type {string[]}
      */
-    let selector;
-    function resetSelector() {
-        return selector.reset(sample(allSelections, 4), Math.floor(Math.random() * 4))
+    let selections;
+    /**
+     * @type {number}
+     */
+    let correct;
+    /**
+     * @type {boolean}
+     */
+    let resetFlag;
+    /**
+     * @type {boolean}
+     */
+    let nextDisabled;
+    function reset() {
+       selections = sample(allSelections, 4);
+       correct = 2;
+       resetFlag = true;
+       nextDisabled = true;
     }
-    onMount(() => {
-        resetSelector()
-    })
+    reset();
 </script>
 
-<Selector bind:this={selector}/>
-<button on:click={() => {console.log('selected', resetSelector())}}>Next</button>
+<Selector 
+    on:selection={event => {nextDisabled = false; console.log(event.detail.selectionWasCorrect)}} 
+    bind:resetFlag={resetFlag} 
+    selections={selections} 
+    correct={correct}
+/>
+<button disabled={nextDisabled} on:click={reset}>Next</button>
