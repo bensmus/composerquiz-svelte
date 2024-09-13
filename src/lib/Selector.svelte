@@ -2,14 +2,15 @@
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
 
+    export let selections;
+    export let correct;
+    export let disabled;
+
     /**
      * @type {number | null}
      */
     let currentSelection = null; // What button is selected.
     let selectionMade = false; // Has the select button been clicked?
-    
-    export let selections;
-    export let correct;
 
     export function reset() {
         currentSelection = null;
@@ -27,20 +28,26 @@
     button.wrong {
         background-color: red;
     }
+    #choice-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
 </style>
 
 <!-- Choice buttons -->
-<div>
+<div id="choice-buttons">
     {#each {length: selections.length} as _, i}
         {#if !selectionMade}
             <!-- Choice buttons are interactive and can be selected -->
-            <button class:selected={currentSelection === i} on:click={() => currentSelection = i}>
+            <button class:selected={currentSelection === i} on:click={() => currentSelection = i} disabled={disabled}>
                 {selections[i]}
             </button>
         {/if}
         {#if selectionMade}
             <!-- Choice buttons are non-interactive and show the correct and wrong choice -->
-            <button class:correct={i === correct} class:wrong={i === currentSelection && i !== correct}>
+            <button class={i === currentSelection ? (i === correct ? 'correct' : 'wrong') : ''} disabled={disabled}>
                 {selections[i]}
             </button>
         {/if}
@@ -49,6 +56,7 @@
 
 <!-- Select button -->
 <button 
+    class="big-button"
     disabled={currentSelection === null || selectionMade} 
     on:click={() => {
         selectionMade = true;
