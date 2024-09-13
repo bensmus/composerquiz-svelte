@@ -1,7 +1,6 @@
 <script>
     import Selector from './Selector.svelte';
     import { sample } from './util.js'
-    
     const allSelections = ['Apple', 'Orange', 'Kiwi', 'Lemon', 'Potato', 'Avocado', 'Walnut'];
     /**
      * @returns {[string[], number, string]}
@@ -10,7 +9,7 @@
         return [sample(allSelections, 4), Math.floor(Math.random() * 4), 'Etude'];
     }
     let [selections, correct, pieceName] = fetch();
-
+    $: correctComposer = selections[correct];
     let playbackStarted = false; // Only enable selector once audio playback has started.
     let selectionMade = false; // Only enable next button after selection has been made.
     /**
@@ -59,8 +58,13 @@
     />
 </section>
 <section>
-    <h1>Composer: {!selectionMade ? 'hidden' : selections[correct]}</h1>
-    <h1>Piece: {!selectionMade ? 'hidden' : pieceName}</h1>
+    {#if !selectionMade}
+        <h1>Composer: hidden</h1>
+        <h1>Piece: hidden</h1>
+    {:else}
+        <h1>Composer: <a href="{'https://en.wikipedia.org/wiki/' + correctComposer}" target='_blank'>{correctComposer}</a></h1>
+        <h1>Piece: <a href="https://spotify.com" target="_blank">{pieceName}</a></h1>
+    {/if}
     <button 
         disabled={!selectionMade}
         class="big-button" on:click={reset}>
