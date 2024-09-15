@@ -1,29 +1,48 @@
 /**
- * @param {any[]} array
- * @param {number} count
+ * @param {number} minVal 
+ * @param {number} bound 
+ * 
+ * `randInt(2, 5)` could return either 2, 3, or 4.
  */
-export function sample(array, count) {
-    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    /**
-     * @param {any[]} array
-     */
-    function shuffle(array) {
-        let currentIndex = array.length;
-    
-        // While there remain elements to shuffle...
-        while (currentIndex != 0) {
-    
-            // Pick a remaining element...
-            let randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
+function randInt(minVal, bound) {
+    return Math.floor(Math.random() * (bound - minVal)) + minVal;
+}
 
-            // And swap it with the current element.
-            [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
-        }
+/**
+ * @param {Object.<string, number>} distrib 
+ * @param {number} count 
+ * 
+ * Sample an unormalized distribution without replacement.
+ * `sampleDistrib({'cat': 0, 'dog': 10, 'bird': 5}, 2)` gives `['dog', 'bird']` in some order.
+ */
+export function sampleDistrib(distrib, count) {
+    if (count > Object.keys(distrib).length) {
+        throw new Error('Sampling more elements than are present in the distribution.');
     }
 
-    const copiedArray = [...array]
-    shuffle(copiedArray)
-    return copiedArray.slice(0, count)
+    /**
+     * @param {Object.<string, number>} distrib 
+     */
+    function sampleOne(distrib) {
+        const sumOfVals = Object.values(distrib).reduce((partialSum, a) => partialSum + a, 0);
+        const randPosInDistrib = randInt(0, sumOfVals);
+        let currentPos = 0;
+        for (const [key, value] of Object.entries(distrib)) {
+            currentPos += value;
+            if (currentPos > randPosInDistrib) {
+                return key;
+            }
+        }
+        throw new Error('Check for empty distribution or 0 probability.')
+    }
+
+    const sampled = []
+    const distribCopy = {...distrib}
+    for (const _ of Array(count)) {
+        const sample = sampleOne(distribCopy)
+        sampled.push(sample)
+        delete distribCopy[sample]
+    }
+
+    return sampled
 }
