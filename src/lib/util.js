@@ -4,7 +4,7 @@
  * 
  * `randInt(2, 5)` could return either 2, 3, or 4.
  */
-function randInt(minVal, bound) {
+export function randInt(minVal, bound) {
     return Math.floor(Math.random() * (bound - minVal)) + minVal;
 }
 

@@ -1,4 +1,4 @@
-import { sampleDistrib, sampleArray } from '$lib/util';
+import { sampleDistrib, sampleArray, randInt } from '$lib/util';
 import axios from 'axios';
 
 const openopusBaseUrl = 'https://api.openopus.org/';
@@ -53,7 +53,7 @@ async function fetchWorks(composerId) {
 }
 
 /**
- * Fetch [correct, decoys, workTitle] from the OpenOpus API.
+ * Fetch [correct, selections, workTitle] from the OpenOpus API.
  * Sample 4 composers from epoch.
  * Sample work from correct composer.
  * 
@@ -62,13 +62,12 @@ async function fetchWorks(composerId) {
 export async function fetchComposersAndWork(epochMask) {
     const epochDistrib = makeEpochDistrib(epochMask);
     const epoch = sampleDistrib(epochDistrib, 1)[0];
-    const composersObjs = await fetchComposers(epoch);
-    const samplesObjs = sampleArray(composersObjs, 4);
-    const samplesNames = samplesObjs.map(obj => obj.complete_name);
-    const correct = samplesNames[0];
-    const correctId = samplesObjs[0].id;
-    const decoys = [samplesNames[1], samplesNames[2], samplesNames[3]];
+    const composersObjsAll = await fetchComposers(epoch);
+    const composerObjs = sampleArray(composersObjsAll, 4);
+    const selections = composerObjs.map(obj => obj.complete_name);
+    const correct = randInt(0, 4);
+    const correctId = composerObjs[correct].id;
     const worksObjs = await fetchWorks(correctId);
     const workTitle = sampleArray(worksObjs, 1)[0].title;
-    return [correct, decoys, workTitle];
+    return [correct, selections, workTitle];
 }

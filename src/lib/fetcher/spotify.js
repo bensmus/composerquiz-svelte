@@ -1,4 +1,5 @@
 import axios from 'axios';
+import unidecode from 'unidecode';
 
 const spotifyBaseUrl = 'https://api.spotify.com';
 
@@ -31,19 +32,30 @@ async function spotifySearch(query, token) {
 }
 
 /** 
- * Check that the names are the same when diatrics are removed.
+ * Check that fullName1 and fullName2 refer to the same composer.
+ * Look at last name and first letter of string.
+ * 
+ * E.g. 
+ * ("Béla Bartók", "Bela Bartok") => true
+ * ("Mikhail Ivanovich Glinka", "Mikhail Glinka") => true
+ * ("C.P.E Bach, J.S. Bach") => false
  * 
  * @param {string} fullName1 
  * @param {string} fullName2 
  */
 function composerNameCheck(fullName1, fullName2) {
-    /** @param {string} str */
-    function removeDiatrics(str) {
-        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-    }
-    const checkSuccess = removeDiatrics(fullName1) === removeDiatrics(fullName2);
+    fullName1 = unidecode(fullName1);
+    fullName2 = unidecode(fullName2);
+    const firstLetter1 = fullName1[0];
+    const firstLetter2 = fullName2[0];
+    const array1 = fullName1.split(' ');
+    const lastName1 = array1[array1.length - 1];
+    const array2 = fullName2.split(' ');
+    const lastName2 = array2[array2.length - 1];
+
+    const checkSuccess = firstLetter1 == firstLetter2 && lastName1 == lastName2;
     if (!checkSuccess) {
-        console.warn(`${fullName1} != ${fullName2}`);
+        console.warn(`${fullName1} distinct from ${fullName2}`);
     }
     return checkSuccess;
 }

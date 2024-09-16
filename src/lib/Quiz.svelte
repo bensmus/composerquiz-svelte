@@ -1,20 +1,13 @@
 <script>
     import Selector from './Selector.svelte';
     import { sampleArray } from './util.js'
-    import { fetchWorkTitleAndUrls } from './fetcher/spotify';
+    import { fetch } from './fetcher/fetcher';
 
+    /** @type {boolean[]} */
     export let epochMask;
     export let questionCount;
-    
-    const allSelections = ['Apple', 'Orange', 'Kiwi', 'Lemon', 'Potato', 'Avocado', 'Walnut'];
-    /**
-     * @returns {[string[], number, string]}
-    */
-    function fetch() {
-        return [sampleArray(allSelections, 4), Math.floor(Math.random() * 4), 'Etude'];
-    }
-    let [selections, correct, pieceName] = fetch();
-    $: correctComposer = selections[correct];
+
+    let fetchPromise = fetch(epochMask);
     let playbackStarted = false; // Only enable selector once audio playback has started.
     let selectionMade = false; // Only enable next button after selection has been made.
     /**
@@ -22,13 +15,11 @@
     */
     let selector;
     function reset() {
-       [selections, correct] = fetch();
+       fetchPromise = fetch(epochMask);
        playbackStarted = false;
        selectionMade = false;
        selector.reset();
     }
-
-    console.log(fetchWorkTitleAndUrls('Ludwig van Beethoven', 'fur elise'))
 </script>
 
 <style>
@@ -50,9 +41,12 @@
     }
 </style>
 
+{#await fetchPromise}
+    Loading
+{:then [correct, selections, workTitle, previewUrl, spotifyUrl]}
 <section>
     <h1>Listen to piece excerpt</h1>
-    <audio on:play={() => {playbackStarted = true}} controls id="audio" src="https://p.scdn.co/mp3-preview/5aa90bffe7aed8678c5ae99ec4a56c46dd2ae2b2?cid=66a3d2ff0264486bb7e5e495cc712271"></audio>
+    <audio on:play={() => {playbackStarted = true}} controls id="audio" src={previewUrl}></audio>
 </section>
 <section>
     <h1>Select composer</h1>
@@ -69,8 +63,8 @@
         <h1>Composer: hidden</h1>
         <h1>Piece: hidden</h1>
     {:else}
-        <h1>Composer: <a href="{'https://en.wikipedia.org/wiki/' + correctComposer}" target='_blank'>{correctComposer}</a></h1>
-        <h1>Piece: <a href="https://spotify.com" target="_blank">{pieceName}</a></h1>
+        <h1>Composer: <a href="{'https://en.wikipedia.org/wiki/' + selections[correct]}" target='_blank'>{selections[correct]}</a></h1>
+        <h1>Piece: <a href={spotifyUrl} target="_blank">{workTitle}</a></h1>
     {/if}
     <button 
         disabled={!selectionMade}
@@ -78,3 +72,4 @@
         Next
     </button>
 </section>
+{/await}

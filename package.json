@@ -23,6 +23,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"axios": "^1.7.7"
+		"axios": "^1.7.7",
+		"unidecode": "^1.1.0"
 	}
 }
