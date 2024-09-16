@@ -51,7 +51,7 @@
 <section>
     <h1>Select composer</h1>
     <Selector 
-        disabled={!playbackStarted}
+        disabledExternal={!playbackStarted}
         on:selection={event => {selectionMade = true; console.log(event.detail.selectionWasCorrect)}} 
         bind:this={selector}
         selections={selections} 

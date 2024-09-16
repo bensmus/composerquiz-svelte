@@ -4,7 +4,7 @@
 
     export let selections;
     export let correct;
-    export let disabled;
+    export let disabledExternal; // Boolean prop to disable or enable the selector.
 
     /**
      * @type {number | null}
@@ -20,13 +20,13 @@
 
 <style>
     button.selected {
-        background-color: blue;
+        background-color: lightblue;
     }
     button.correct {
-        background-color: green;
+        background-color: lightgreen;
     }
     button.wrong {
-        background-color: red;
+        background-color: #FFCCCB ;
     }
     #choice-buttons {
         display: grid;
@@ -41,13 +41,13 @@
     {#each {length: selections.length} as _, i}
         {#if !selectionMade}
             <!-- Choice buttons are interactive and can be selected -->
-            <button class:selected={currentSelection === i} on:click={() => currentSelection = i} disabled={disabled}>
+            <button class:selected={currentSelection === i} on:click={() => currentSelection = i} disabled={disabledExternal}>
                 {selections[i]}
             </button>
         {/if}
         {#if selectionMade}
             <!-- Choice buttons are non-interactive and show the correct and wrong choice -->
-            <button class={i === currentSelection ? (i === correct ? 'correct' : 'wrong') : ''} disabled={disabled}>
+            <button class={i === currentSelection ? (i === correct ? 'correct' : 'wrong') : ''} disabled={true}>
                 {selections[i]}
             </button>
         {/if}
