@@ -9,40 +9,56 @@ function randInt(minVal, bound) {
 }
 
 /**
- * @param {Object.<string, number>} distrib 
+ * @param {Map<any, number>} distrib 
  * @param {number} count 
  * 
  * Sample an unormalized distribution without replacement.
  * `sampleDistrib({'cat': 0, 'dog': 10, 'bird': 5}, 2)` gives `['dog', 'bird']` in some order.
  */
 export function sampleDistrib(distrib, count) {
-    if (count > Object.keys(distrib).length) {
+    if (count > distrib.size) {
         throw new Error('Sampling more elements than are present in the distribution.');
     }
 
     /**
-     * @param {Object.<string, number>} distrib 
+     * @param {Map<any, number>} distrib 
      */
     function sampleOne(distrib) {
-        const sumOfVals = Object.values(distrib).reduce((partialSum, a) => partialSum + a, 0);
+        const sumOfVals = Array.from(distrib.values()).reduce((partialSum, a) => partialSum + a, 0);
         const randPosInDistrib = randInt(0, sumOfVals);
         let currentPos = 0;
-        for (const [key, value] of Object.entries(distrib)) {
+        for (const [key, value] of distrib.entries()) {
             currentPos += value;
             if (currentPos > randPosInDistrib) {
                 return key;
             }
         }
-        throw new Error('Check for empty distribution or 0 probability.')
+        throw new Error('Check for empty distribution or 0 probability.');
     }
 
     const sampled = []
-    const distribCopy = {...distrib}
+    const distribCopy = new Map(distrib)
     for (const _ of Array(count)) {
         const sample = sampleOne(distribCopy)
         sampled.push(sample)
-        delete distribCopy[sample]
+        distribCopy.delete(sample)
     }
 
     return sampled
+}
+
+/**
+ * @param {any[]} array 
+ * @param {number} count 
+ */
+export function sampleArray(array, count) {
+    /**
+     * @type {Map<any, number>}
+     */
+    const distrib = new Map();
+    for (const elem of array) {
+        distrib.set(elem, 1)
+    }
+
+    return sampleDistrib(distrib, count);
 }
