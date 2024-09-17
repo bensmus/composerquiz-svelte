@@ -32,12 +32,15 @@
      * @type {Selector}
     */
     let selector;
-    async function reset() {
+    async function nextQuestion() {
+        currentQuestion++;
         playbackStarted = false;
         selectionMade = false;
         await updateApiVals();
         selector.reset();
     }
+
+    let currentQuestion = 1; // Which question we are on right now. Humans count from 1.
 </script>
 
 <style>
@@ -68,6 +71,10 @@
     }
     #spinner-div div {
         align-self: center;
+    }
+    #question-info {
+        width: min-content;
+        margin: auto;
     }
 </style>
 
@@ -103,7 +110,12 @@
     {/if}
     <button 
         disabled={!selectionMade}
-        class="big-button" on:click={reset}>
+        class="big-button" on:click={nextQuestion}>
         Next
     </button>
+</section>
+<section>
+    <div id='question-info'>
+        {currentQuestion}/{questionCount}
+    </div>
 </section>
