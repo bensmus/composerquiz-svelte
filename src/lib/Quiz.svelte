@@ -1,11 +1,18 @@
 <script>
     import Selector from './Selector.svelte';
     import Spinner from './Spinner.svelte';
+    import CenteredContainer from './CenteredContainer.svelte';
     import { fetch } from './fetcher/fetcher';
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher(); // Quiz complete event.
 
     /** @type {boolean[]} */
     export let epochMask;
+    /** @type {number }*/
     export let questionCount;
+
+    let correctCount = 0;
 
     /** @returns {[number, string[], null, null, null]}*/
     function loadingVals() {
@@ -34,7 +41,12 @@
     let selector;
     async function nextQuestion() {
         selector.reset();
-        currentQuestion++;
+        if (currentQuestion == questionCount) { // Done the quiz:
+            dispatch('quizdone', {correctCount: correctCount});
+            currentQuestion = 1;
+        } else {
+            currentQuestion++;
+        }
         playbackStarted = false;
         selectionMade = false;
         await updateApiVals();
@@ -60,18 +72,6 @@
     :global(button) {
         min-height: 5vmin;
     }
-    #spinner-div {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 70vh;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-    #spinner-div div {
-        align-self: center;
-    }
     #question-info {
         width: min-content;
         margin: auto;
@@ -79,11 +79,9 @@
 </style>
 
 {#if loading}
-<div id='spinner-div'>
-    <div>
-        <Spinner />
-    </div>
-</div>
+<CenteredContainer>
+    <Spinner />
+</CenteredContainer>
 {/if}
 
 <section>
@@ -94,7 +92,12 @@
     <h1>Select composer</h1>
     <Selector 
         disabledExternal={!playbackStarted}
-        on:selection={event => {selectionMade = true; console.log(event.detail.selectionWasCorrect)}} 
+        on:selection={event => {
+            selectionMade = true; 
+            if (event.detail.selectionWasCorrect) {
+                correctCount++;
+            }
+        }} 
         bind:this={selector}
         selections={selections} 
         correct={correct}

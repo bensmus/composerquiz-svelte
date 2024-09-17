@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    const dispatch = createEventDispatcher();
+    
+    const dispatch = createEventDispatcher(); // Selection event.
 
     export let selections;
     export let correct;
