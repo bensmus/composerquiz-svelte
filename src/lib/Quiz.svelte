@@ -7,7 +7,22 @@
     export let epochMask;
     export let questionCount;
 
-    let fetchPromise = fetch(epochMask);
+    let correct = -1;
+    let selections = Array(4).fill('Loading...')
+    let workTitle = 'Loading...'
+    let previewUrl = 'Loading...'
+    let spotifyUrl = 'Loading...'
+    /** @type {boolean} */
+    let loading;
+    
+    async function updateApiVals() {
+        loading = true;
+        [correct, selections, workTitle, previewUrl, spotifyUrl] = await fetch(epochMask);
+        loading = false;
+    }
+    
+    updateApiVals();
+
     let playbackStarted = false; // Only enable selector once audio playback has started.
     let selectionMade = false; // Only enable next button after selection has been made.
 
@@ -15,8 +30,8 @@
      * @type {Selector}
     */
     let selector;
-    function reset() {
-        fetchPromise = fetch(epochMask);
+    async function reset() {
+        await updateApiVals();
         playbackStarted = false;
         selectionMade = false;
         selector.reset();
@@ -41,7 +56,11 @@
         min-height: 5vmin;
     }
     #spinner-div {
+        position: fixed;
+        top: 0;
+        left: 0;
         height: 70vh;
+        width: 100%;
         display: flex;
         justify-content: center;
     }
@@ -50,13 +69,14 @@
     }
 </style>
 
-{#await fetchPromise}
+{#if loading}
 <div id='spinner-div'>
     <div>
         <Spinner />
     </div>
 </div>
-{:then [correct, selections, workTitle, previewUrl, spotifyUrl]}
+{/if}
+
 <section>
     <h1>Listen to piece excerpt</h1>
     <audio on:play={() => {playbackStarted = true}} controls id="audio" src={previewUrl}></audio>
@@ -85,4 +105,3 @@
         Next
     </button>
 </section>
-{/await}
