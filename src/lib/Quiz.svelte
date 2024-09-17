@@ -7,9 +7,9 @@
     export let epochMask;
     export let questionCount;
 
-    /** @returns {[number | null, string[], null, null, null]}*/
+    /** @returns {[number, string[], null, null, null]}*/
     function loadingVals() {
-        return [null, Array(4).fill('Loading...'), null, null, null]
+        return [-1, Array(4).fill('Loading...'), null, null, null]
     }
 
     let [correct, selections, workTitle, previewUrl, spotifyUrl] = loadingVals();
@@ -33,11 +33,11 @@
     */
     let selector;
     async function nextQuestion() {
+        selector.reset();
         currentQuestion++;
         playbackStarted = false;
         selectionMade = false;
         await updateApiVals();
-        selector.reset();
     }
 
     let currentQuestion = 1; // Which question we are on right now. Humans count from 1.
