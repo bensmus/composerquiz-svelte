@@ -31,9 +31,9 @@
     */
     let selector;
     async function reset() {
-        await updateApiVals();
         playbackStarted = false;
         selectionMade = false;
+        await updateApiVals();
         selector.reset();
     }
 </script>
