@@ -7,15 +7,17 @@
     export let epochMask;
     export let questionCount;
 
-    let correct = -1;
-    let selections = Array(4).fill('Loading...')
-    let workTitle = 'Loading...'
-    let previewUrl = 'Loading...'
-    let spotifyUrl = 'Loading...'
+    /** @returns {[number, string[], null, null, null]}*/
+    function loadingVals() {
+        return [-1, Array(4).fill('Loading...'), null, null, null]
+    }
+
+    let [correct, selections, workTitle, previewUrl, spotifyUrl] = loadingVals();
     /** @type {boolean} */
-    let loading;
+    let loading; // Whether or not to show the loading spinner.
     
     async function updateApiVals() {
+        [correct, selections, workTitle, previewUrl, spotifyUrl] = loadingVals();
         loading = true;
         [correct, selections, workTitle, previewUrl, spotifyUrl] = await fetch(epochMask);
         loading = false;
