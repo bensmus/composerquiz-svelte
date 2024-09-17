@@ -1,6 +1,6 @@
 <script>
     import Selector from './Selector.svelte';
-    import { sampleArray } from './util.js'
+    import Spinner from './Spinner.svelte';
     import { fetch } from './fetcher/fetcher';
 
     /** @type {boolean[]} */
@@ -10,15 +10,16 @@
     let fetchPromise = fetch(epochMask);
     let playbackStarted = false; // Only enable selector once audio playback has started.
     let selectionMade = false; // Only enable next button after selection has been made.
+
     /**
      * @type {Selector}
     */
     let selector;
     function reset() {
-       fetchPromise = fetch(epochMask);
-       playbackStarted = false;
-       selectionMade = false;
-       selector.reset();
+        fetchPromise = fetch(epochMask);
+        playbackStarted = false;
+        selectionMade = false;
+        selector.reset();
     }
 </script>
 
@@ -39,10 +40,22 @@
     :global(button) {
         min-height: 5vmin;
     }
+    #spinner-div {
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+    }
+    #spinner-div div {
+        align-self: center;
+    }
 </style>
 
 {#await fetchPromise}
-    Loading
+<div id='spinner-div'>
+    <div>
+        <Spinner />
+    </div>
+</div>
 {:then [correct, selections, workTitle, previewUrl, spotifyUrl]}
 <section>
     <h1>Listen to piece excerpt</h1>
