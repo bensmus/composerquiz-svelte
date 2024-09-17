@@ -54,9 +54,6 @@ function composerNameCheck(fullName1, fullName2) {
     const lastName2 = array2[array2.length - 1];
 
     const checkSuccess = firstLetter1 == firstLetter2 && lastName1 == lastName2;
-    if (!checkSuccess) {
-        console.warn(`${fullName1} distinct from ${fullName2}`);
-    }
     return checkSuccess;
 }
 

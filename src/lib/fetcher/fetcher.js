@@ -1,10 +1,10 @@
 import { fetchComposersAndWork } from './openopus';
 import { fetchWorkTitleAndUrls } from './spotify';
 
-/** @param {boolean[]} epochMask  */
-export async function fetch(epochMask) {
+/** @param {string[]} epochsSelected  */
+export async function fetch(epochsSelected) {
     while (true) {
-        const [correct, selections, queryWorkTitle] = await fetchComposersAndWork(epochMask);
+        const [correct, selections, queryWorkTitle] = await fetchComposersAndWork(epochsSelected);
         const spotifyResponse = await fetchWorkTitleAndUrls(selections[correct], queryWorkTitle);
         if (spotifyResponse) {
             return [correct, selections, ...spotifyResponse];

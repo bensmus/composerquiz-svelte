@@ -7,8 +7,8 @@
 
     const dispatch = createEventDispatcher(); // Quiz complete event.
 
-    /** @type {boolean[]} */
-    export let epochMask;
+    /** @type {string[]} */
+    export let epochsSelected;
     /** @type {number }*/
     export let questionCount;
 
@@ -26,7 +26,7 @@
     async function updateApiVals() {
         [correct, selections, workTitle, previewUrl, spotifyUrl] = loadingVals();
         loading = true;
-        [correct, selections, workTitle, previewUrl, spotifyUrl] = await fetch(epochMask);
+        [correct, selections, workTitle, previewUrl, spotifyUrl] = await fetch(epochsSelected);
         loading = false;
     }
     
@@ -56,22 +56,6 @@
 </script>
 
 <style>
-    section {
-        margin: 10px;
-    }
-    h1 {
-        font-weight: normal;
-    }
-    :global(body) {
-        max-width: 500px;
-        margin: auto;
-    }
-    :global(.big-button) {
-        width: 100%;
-    }
-    :global(button) {
-        min-height: 5vmin;
-    }
     #question-info {
         width: min-content;
         margin: auto;

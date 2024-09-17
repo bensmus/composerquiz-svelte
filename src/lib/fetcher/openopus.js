@@ -15,15 +15,14 @@ const epochComposerCounts = [
 ]
 
 /**
- * @param {boolean[]} epochMask 
+ * @param {string[]} epochsSelected 
  * @returns {Map<string, number>}
  */
-function makeEpochDistrib(epochMask) {
+function makeEpochDistrib(epochsSelected) {
     const epochDistrib = new Map();
-    for (let i = 0; i < epochs.length; i++) {
-        if (epochMask[i]) {
-            epochDistrib.set(epochs[i], epochComposerCounts[i]);
-        }
+    for (const epochSelected of epochsSelected) {
+        const epochSelectedIndex = epochs.indexOf(epochSelected)
+        epochDistrib.set(epochSelected, epochComposerCounts[epochSelectedIndex]);
     }
     return epochDistrib;
 }
@@ -57,10 +56,10 @@ async function fetchWorks(composerId) {
  * Sample 4 composers from epoch.
  * Sample work from correct composer.
  * 
- * @param {boolean[]} epochMask 
+ * @param {string[]} epochsSelected 
  */
-export async function fetchComposersAndWork(epochMask) {
-    const epochDistrib = makeEpochDistrib(epochMask);
+export async function fetchComposersAndWork(epochsSelected) {
+    const epochDistrib = makeEpochDistrib(epochsSelected);
     const epoch = sampleDistrib(epochDistrib, 1)[0];
     const composersObjsAll = await fetchComposers(epoch);
     const composerObjs = sampleArray(composersObjsAll, 4);
