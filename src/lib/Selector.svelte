@@ -47,7 +47,7 @@
         {/if}
         {#if selectionMade}
             <!-- Choice buttons are non-interactive and show the correct and wrong choice -->
-            <button class={i === currentSelection ? (i === correct ? 'correct' : 'wrong') : ''} disabled={true}>
+            <button class={(i === currentSelection && correct !== null)? (i === correct ? 'correct' : 'wrong') : ''} disabled={true}>
                 {selections[i]}
             </button>
         {/if}

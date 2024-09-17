@@ -7,9 +7,9 @@
     export let epochMask;
     export let questionCount;
 
-    /** @returns {[number, string[], null, null, null]}*/
+    /** @returns {[number | null, string[], null, null, null]}*/
     function loadingVals() {
-        return [-1, Array(4).fill('Loading...'), null, null, null]
+        return [null, Array(4).fill('Loading...'), null, null, null]
     }
 
     let [correct, selections, workTitle, previewUrl, spotifyUrl] = loadingVals();
