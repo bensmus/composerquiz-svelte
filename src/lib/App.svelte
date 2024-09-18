@@ -8,6 +8,12 @@
 
     let step = 'start'; // Either 'start', 'quiz', or 'result'.
     let correctCount = 0;
+
+    $: accuracy = correctCount / questionCount;
+    $: reactionToAccuracy = 
+        accuracy < 0.25 ? 'Unlucky.' :
+        accuracy < 0.5 ? 'Good.' :
+        accuracy < 0.75 ? 'Impressive!' : 'Majestic 👑';
 </script>
 
 <style>
@@ -80,7 +86,9 @@
 {#if step == 'result'}
     <CenteredContainer>
         <div>
-            <p>Got {correctCount} correct.</p>
+            <div>Score: {correctCount}/{questionCount}</div>
+            <div><i>{reactionToAccuracy}</i></div>
+            <br>
             <button on:click={() => {step = 'start';}}>New Quiz</button>
         </div>
     </CenteredContainer>
