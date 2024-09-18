@@ -1,0 +1,1 @@
+surge --domain composerquiz.surge.sh ./build
