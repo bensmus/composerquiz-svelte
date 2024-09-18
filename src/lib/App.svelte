@@ -31,7 +31,7 @@
         width: 100%;
     }
     :global(button) {
-        min-height: 5vmin;
+        min-height: 7vmin;
     }
 </style>
 
