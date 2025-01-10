@@ -7,7 +7,6 @@ async function newToken() {
     const tokenUrl = 'https://v4m134dlpi.execute-api.us-west-2.amazonaws.com/refreshSpotifyAuthToken';
     const response = await axios.get(tokenUrl);
     const token = response.data;
-    console.log(token);
     return token;
 }
 
@@ -68,6 +67,8 @@ export async function fetchWorkTitleAndUrls(composer, queryWorkTitle) {
     const token = await newToken();
     const query = `${queryWorkTitle} by ${composer}`;
     const response = await spotifySearch(query, token);
+    console.log('App query:', query)
+    console.log('Spotify response:', response)
     const items = response.data.tracks.items;
 
     for (const item of items) {
@@ -80,6 +81,8 @@ export async function fetchWorkTitleAndUrls(composer, queryWorkTitle) {
         }
         if (itemComposerOk && item.preview_url) {
             return [item.name, item.preview_url, item.external_urls.spotify];
+        } else {
+            console.log('correct name: ', itemComposerOk, 'has preview url: ', item.preview_url != null);
         }
     }
     // From Spotify's search results, there was no tracks
